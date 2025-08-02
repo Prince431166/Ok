@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Multi-Game Hub</title>
   <style>
-    /* Base Styles */
+ /* Base Styles */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -336,7 +336,6 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- Header with Theme Toggle -->
     <header>
       <h1>🎮 Game Hub</h1>
       <div class="theme-toggle">
@@ -346,7 +345,6 @@
       </div>
     </header>
 
-    <!-- Game Selection Menu -->
     <div class="game-menu">
       <button onclick="loadGame('chess')">♟️ Chess</button>
       <button onclick="loadGame('ludo')">🎲 Ludo</button>
@@ -354,13 +352,52 @@
       <button onclick="loadGame('snake')">🐍 Snake</button>
     </div>
 
-    <!-- Game Container (Dynamically Loaded) -->
     <div id="game-container">
-      <p>Select a game to begin!</p>
+      <p>Loading default game...</p>
     </div>
   </div>
 
   <script>
+    let currentGame = null;
+    let currentTheme = localStorage.getItem("theme") || "dark";
+
+    function init() {
+      setTheme(currentTheme);
+
+      // Load default game if none selected
+      loadGame("snake");
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+      currentTheme = theme;
+      if (currentGame && currentGame.applyTheme) {
+        currentGame.applyTheme(theme);
+      }
+    }
+
+    function loadGame(gameType) {
+      const gameContainer = document.getElementById("game-container");
+      gameContainer.innerHTML = "";
+
+      switch (gameType) {
+        case "chess":
+          currentGame = new ChessGame(gameContainer);
+          break;
+        case "ludo":
+          currentGame = new LudoGame(gameContainer);
+          break;
+        case "tash":
+          currentGame = new TashGame(gameContainer);
+          break;
+        case "snake":
+        default:
+          currentGame = new SnakeGame(gameContainer);
+          break;
+      }
+    }
+<script>
     // Global variables
     let currentGame = null;
     let currentTheme = localStorage.getItem("theme") || "dark";
