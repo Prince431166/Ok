@@ -212,11 +212,25 @@
       border-color: #64FFDA;
     }
     
-    [data-theme="dark"] .chess-square:nth-child(odd) {
+    [data-theme="dark"] .chess-square:nth-child(2n+1):nth-child(-n+8),
+    [data-theme="dark"] .chess-square:nth-child(2n):nth-child(n+9):nth-child(-n+16),
+    [data-theme="dark"] .chess-square:nth-child(2n+17):nth-child(-n+24),
+    [data-theme="dark"] .chess-square:nth-child(2n+24):nth-child(n+25):nth-child(-n+32),
+    [data-theme="dark"] .chess-square:nth-child(2n+33):nth-child(-n+40),
+    [data-theme="dark"] .chess-square:nth-child(2n+40):nth-child(n+41):nth-child(-n+48),
+    [data-theme="dark"] .chess-square:nth-child(2n+49):nth-child(-n+56),
+    [data-theme="dark"] .chess-square:nth-child(2n+56):nth-child(n+57):nth-child(-n+64) {
       background-color: #2D3748;
     }
     
-    [data-theme="dark"] .chess-square:nth-child(even) {
+    [data-theme="dark"] .chess-square:nth-child(2n):nth-child(-n+8),
+    [data-theme="dark"] .chess-square:nth-child(2n+9):nth-child(-n+16),
+    [data-theme="dark"] .chess-square:nth-child(2n+16):nth-child(n+17):nth-child(-n+24),
+    [data-theme="dark"] .chess-square:nth-child(2n+25):nth-child(-n+32),
+    [data-theme="dark"] .chess-square:nth-child(2n+32):nth-child(n+33):nth-child(-n+40),
+    [data-theme="dark"] .chess-square:nth-child(2n+41):nth-child(-n+48),
+    [data-theme="dark"] .chess-square:nth-child(2n+48):nth-child(n+49):nth-child(-n+56),
+    [data-theme="dark"] .chess-square:nth-child(2n+57):nth-child(-n+64) {
       background-color: #4A5568;
     }
     
@@ -239,11 +253,25 @@
       border-color: #D65076;
     }
     
-    [data-theme="romantic"] .chess-square:nth-child(odd) {
+    [data-theme="romantic"] .chess-square:nth-child(2n+1):nth-child(-n+8),
+    [data-theme="romantic"] .chess-square:nth-child(2n):nth-child(n+9):nth-child(-n+16),
+    [data-theme="romantic"] .chess-square:nth-child(2n+17):nth-child(-n+24),
+    [data-theme="romantic"] .chess-square:nth-child(2n+24):nth-child(n+25):nth-child(-n+32),
+    [data-theme="romantic"] .chess-square:nth-child(2n+33):nth-child(-n+40),
+    [data-theme="romantic"] .chess-square:nth-child(2n+40):nth-child(n+41):nth-child(-n+48),
+    [data-theme="romantic"] .chess-square:nth-child(2n+49):nth-child(-n+56),
+    [data-theme="romantic"] .chess-square:nth-child(2n+56):nth-child(n+57):nth-child(-n+64) {
       background-color: #FFB7C5;
     }
     
-    [data-theme="romantic"] .chess-square:nth-child(even) {
+    [data-theme="romantic"] .chess-square:nth-child(2n):nth-child(-n+8),
+    [data-theme="romantic"] .chess-square:nth-child(2n+9):nth-child(-n+16),
+    [data-theme="romantic"] .chess-square:nth-child(2n+16):nth-child(n+17):nth-child(-n+24),
+    [data-theme="romantic"] .chess-square:nth-child(2n+25):nth-child(-n+32),
+    [data-theme="romantic"] .chess-square:nth-child(2n+32):nth-child(n+33):nth-child(-n+40),
+    [data-theme="romantic"] .chess-square:nth-child(2n+41):nth-child(-n+48),
+    [data-theme="romantic"] .chess-square:nth-child(2n+48):nth-child(n+49):nth-child(-n+56),
+    [data-theme="romantic"] .chess-square:nth-child(2n+57):nth-child(-n+64) {
       background-color: #FFECF1;
     }
     
@@ -270,11 +298,25 @@
       border-color: #222;
     }
     
-    [data-theme="light"] .chess-square:nth-child(odd) {
+    [data-theme="light"] .chess-square:nth-child(2n+1):nth-child(-n+8),
+    [data-theme="light"] .chess-square:nth-child(2n):nth-child(n+9):nth-child(-n+16),
+    [data-theme="light"] .chess-square:nth-child(2n+17):nth-child(-n+24),
+    [data-theme="light"] .chess-square:nth-child(2n+24):nth-child(n+25):nth-child(-n+32),
+    [data-theme="light"] .chess-square:nth-child(2n+33):nth-child(-n+40),
+    [data-theme="light"] .chess-square:nth-child(2n+40):nth-child(n+41):nth-child(-n+48),
+    [data-theme="light"] .chess-square:nth-child(2n+49):nth-child(-n+56),
+    [data-theme="light"] .chess-square:nth-child(2n+56):nth-child(n+57):nth-child(-n+64) {
       background-color: #F5F5F5;
     }
     
-    [data-theme="light"] .chess-square:nth-child(even) {
+    [data-theme="light"] .chess-square:nth-child(2n):nth-child(-n+8),
+    [data-theme="light"] .chess-square:nth-child(2n+9):nth-child(-n+16),
+    [data-theme="light"] .chess-square:nth-child(2n+16):nth-child(n+17):nth-child(-n+24),
+    [data-theme="light"] .chess-square:nth-child(2n+25):nth-child(-n+32),
+    [data-theme="light"] .chess-square:nth-child(2n+32):nth-child(n+33):nth-child(-n+40),
+    [data-theme="light"] .chess-square:nth-child(2n+41):nth-child(-n+48),
+    [data-theme="light"] .chess-square:nth-child(2n+48):nth-child(n+49):nth-child(-n+56),
+    [data-theme="light"] .chess-square:nth-child(2n+57):nth-child(-n+64) {
       background-color: #DDD;
     }
     
@@ -373,7 +415,7 @@
           <div class="chess-board" id="chess-board"></div>
           <div class="game-info">Current Player: ${this.currentPlayer}</div>
           <div class="controls">
-            <button onclick="currentGame.reset()">Reset</button>
+            <button onclick="window.currentGame.reset()">Reset</button>
           </div>
         `;
         
@@ -489,8 +531,8 @@
           <div class="ludo-board" id="ludo-board"></div>
           <div class="game-info">Current Player: ${this.players[this.currentPlayer]}</div>
           <div class="controls">
-            <button onclick="currentGame.rollDice()">Roll Dice</button>
-            <button onclick="currentGame.reset()">Reset</button>
+            <button onclick="window.currentGame.rollDice()">Roll Dice</button>
+            <button onclick="window.currentGame.reset()">Reset</button>
           </div>
         `;
         
@@ -585,7 +627,7 @@
             <div class="tash-cards" id="tash-cards"></div>
             <div class="game-info">Select matching cards</div>
             <div class="controls">
-              <button onclick="currentGame.reset()">New Game</button>
+              <button onclick="window.currentGame.reset()">New Game</button>
             </div>
           </div>
         `;
@@ -724,7 +766,7 @@
           <div class="snake-game" id="snake-game" tabindex="0"></div>
           <div class="game-info">Score: ${this.score}</div>
           <div class="controls">
-            <button onclick="currentGame.reset()">Reset</button>
+            <button onclick="window.currentGame.reset()">Reset</button>
           </div>
         `;
         
@@ -863,4 +905,4 @@
     window.onload = init;
   </script>
 </body>
-    </html>
+</html>
