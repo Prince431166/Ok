@@ -1,945 +1,330 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Multi-Game Hub</title>
-  <style>
- /* Base Styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: 'Arial', sans-serif;
-      transition: all 0.3s ease;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    
-    .app-container {
-      max-width: 800px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    
-    h1 {
-      font-size: 2rem;
-    }
-    
-    .theme-toggle {
-      display: flex;
-      gap: 8px;
-    }
-    
-    button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.2s ease;
-    }
-    
-    button:hover {
-      transform: translateY(-2px);
-    }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    .game-menu {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-    }
-    
-    .game-menu button {
-      padding: 15px;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    #game-container {
-      margin-top: 10px;
-      padding: 20px;
-      border-radius: 10px;
-      min-height: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    /* Game Specific Styles */
-    .chess-board {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(8, 1fr);
-      width: 400px;
-      height: 400px;
-      border: 2px solid;
-    }
-    
-    .chess-square {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      cursor: pointer;
-    }
-    
-    .ludo-board {
-      width: 400px;
-      height: 400px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,100 L0,100 Z M15,15 L50,15 L50,50 L15,50 Z M50,15 L85,15 L85,50 L50,50 Z M15,50 L50,50 L50,85 L15,85 Z M50,50 L85,50 L85,85 L50,85 Z" fill="none" stroke="black" stroke-width="0.5"/></svg>');
-      background-size: 100% 100%;
-      position: relative;
-    }
-    
-    .ludo-piece {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      position: absolute;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .tash-game {
-      width: 100%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    
-    .tash-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      justify-content: center;
-    }
-    
-    .tash-card {
-      width: 60px;
-      height: 90px;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    .tash-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .snake-game {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      border: 2px solid;
-    }
-    
-    .snake-segment {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background-color: green;
-    }
-    
-    .snake-food {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background-color: red;
-      border-radius: 50%;
-    }
-    
-    .game-info {
-      margin-top: 15px;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-    
-    .controls {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-    }
-    
-    /* Theme Styles */
-    /* Dark Mode */
-    [data-theme="dark"] {
-      background: #0A192F;
-      color: #E6E6FA;
-    }
-    
-    [data-theme="dark"] button {
-      background: #172A45;
-      color: #64FFDA;
-    }
-    
-    [data-theme="dark"] #game-container {
-      background: #1a365d;
-    }
-    
-    [data-theme="dark"] .chess-board {
-      border-color: #64FFDA;
-    }
-    
-    [data-theme="dark"] .chess-square:nth-child(2n+1):nth-child(-n+8),
-    [data-theme="dark"] .chess-square:nth-child(2n):nth-child(n+9):nth-child(-n+16),
-    [data-theme="dark"] .chess-square:nth-child(2n+17):nth-child(-n+24),
-    [data-theme="dark"] .chess-square:nth-child(2n+24):nth-child(n+25):nth-child(-n+32),
-    [data-theme="dark"] .chess-square:nth-child(2n+33):nth-child(-n+40),
-    [data-theme="dark"] .chess-square:nth-child(2n+40):nth-child(n+41):nth-child(-n+48),
-    [data-theme="dark"] .chess-square:nth-child(2n+49):nth-child(-n+56),
-    [data-theme="dark"] .chess-square:nth-child(2n+56):nth-child(n+57):nth-child(-n+64) {
-      background-color: #2D3748;
-    }
-    
-    [data-theme="dark"] .chess-square:nth-child(2n):nth-child(-n+8),
-    [data-theme="dark"] .chess-square:nth-child(2n+9):nth-child(-n+16),
-    [data-theme="dark"] .chess-square:nth-child(2n+16):nth-child(n+17):nth-child(-n+24),
-    [data-theme="dark"] .chess-square:nth-child(2n+25):nth-child(-n+32),
-    [data-theme="dark"] .chess-square:nth-child(2n+32):nth-child(n+33):nth-child(-n+40),
-    [data-theme="dark"] .chess-square:nth-child(2n+41):nth-child(-n+48),
-    [data-theme="dark"] .chess-square:nth-child(2n+48):nth-child(n+49):nth-child(-n+56),
-    [data-theme="dark"] .chess-square:nth-child(2n+57):nth-child(-n+64) {
-      background-color: #4A5568;
-    }
-    
-    /* Romantic Mode */
-    [data-theme="romantic"] {
-      background: #FFD1DC;
-      color: #8B4513;
-    }
-    
-    [data-theme="romantic"] button {
-      background: #B5EAD7;
-      color: #D65076;
-    }
-    
-    [data-theme="romantic"] #game-container {
-      background: #FFECF1;
-    }
-    
-    [data-theme="romantic"] .chess-board {
-      border-color: #D65076;
-    }
-    
-    [data-theme="romantic"] .chess-square:nth-child(2n+1):nth-child(-n+8),
-    [data-theme="romantic"] .chess-square:nth-child(2n):nth-child(n+9):nth-child(-n+16),
-    [data-theme="romantic"] .chess-square:nth-child(2n+17):nth-child(-n+24),
-    [data-theme="romantic"] .chess-square:nth-child(2n+24):nth-child(n+25):nth-child(-n+32),
-    [data-theme="romantic"] .chess-square:nth-child(2n+33):nth-child(-n+40),
-    [data-theme="romantic"] .chess-square:nth-child(2n+40):nth-child(n+41):nth-child(-n+48),
-    [data-theme="romantic"] .chess-square:nth-child(2n+49):nth-child(-n+56),
-    [data-theme="romantic"] .chess-square:nth-child(2n+56):nth-child(n+57):nth-child(-n+64) {
-      background-color: #FFB7C5;
-    }
-    
-    [data-theme="romantic"] .chess-square:nth-child(2n):nth-child(-n+8),
-    [data-theme="romantic"] .chess-square:nth-child(2n+9):nth-child(-n+16),
-    [data-theme="romantic"] .chess-square:nth-child(2n+16):nth-child(n+17):nth-child(-n+24),
-    [data-theme="romantic"] .chess-square:nth-child(2n+25):nth-child(-n+32),
-    [data-theme="romantic"] .chess-square:nth-child(2n+32):nth-child(n+33):nth-child(-n+40),
-    [data-theme="romantic"] .chess-square:nth-child(2n+41):nth-child(-n+48),
-    [data-theme="romantic"] .chess-square:nth-child(2n+48):nth-child(n+49):nth-child(-n+56),
-    [data-theme="romantic"] .chess-square:nth-child(2n+57):nth-child(-n+64) {
-      background-color: #FFECF1;
-    }
-    
-    [data-theme="romantic"] .ludo-piece {
-      box-shadow: 0 0 5px rgba(214, 80, 118, 0.5);
-    }
-    
-    /* Light Mode */
-    [data-theme="light"] {
-      background: #FFF8E7;
-      color: #333;
-    }
-    
-    [data-theme="light"] button {
-      background: #F5F5F5;
-      color: #222;
-    }
-    
-    [data-theme="light"] #game-container {
-      background: #FFF;
-    }
-    
-    [data-theme="light"] .chess-board {
-      border-color: #222;
-    }
-    
-    [data-theme="light"] .chess-square:nth-child(2n+1):nth-child(-n+8),
-    [data-theme="light"] .chess-square:nth-child(2n):nth-child(n+9):nth-child(-n+16),
-    [data-theme="light"] .chess-square:nth-child(2n+17):nth-child(-n+24),
-    [data-theme="light"] .chess-square:nth-child(2n+24):nth-child(n+25):nth-child(-n+32),
-    [data-theme="light"] .chess-square:nth-child(2n+33):nth-child(-n+40),
-    [data-theme="light"] .chess-square:nth-child(2n+40):nth-child(n+41):nth-child(-n+48),
-    [data-theme="light"] .chess-square:nth-child(2n+49):nth-child(-n+56),
-    [data-theme="light"] .chess-square:nth-child(2n+56):nth-child(n+57):nth-child(-n+64) {
-      background-color: #F5F5F5;
-    }
-    
-    [data-theme="light"] .chess-square:nth-child(2n):nth-child(-n+8),
-    [data-theme="light"] .chess-square:nth-child(2n+9):nth-child(-n+16),
-    [data-theme="light"] .chess-square:nth-child(2n+16):nth-child(n+17):nth-child(-n+24),
-    [data-theme="light"] .chess-square:nth-child(2n+25):nth-child(-n+32),
-    [data-theme="light"] .chess-square:nth-child(2n+32):nth-child(n+33):nth-child(-n+40),
-    [data-theme="light"] .chess-square:nth-child(2n+41):nth-child(-n+48),
-    [data-theme="light"] .chess-square:nth-child(2n+48):nth-child(n+49):nth-child(-n+56),
-    [data-theme="light"] .chess-square:nth-child(2n+57):nth-child(-n+64) {
-      background-color: #DDD;
-    }
-    
-    /* Responsive */
-    @media (max-width: 600px) {
-      .chess-board, .ludo-board, .snake-game {
-        width: 300px;
-        height: 300px;
-      }
-      
-      .tash-card {
-        width: 50px;
-        height: 75px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdSense Compliance Fixes - Love Compatibility Calculator</title>
+    <style>
+        :root {
+            --primary-color: #4a154b;
+            --secondary-color: #d1478c;
+            --accent-color: #9c27b0;
+            --light-bg: #fdf2f8;
+            --dark-bg: #1a0a1a;
+            --text-light: #333;
+            --text-dark: #f0e6ef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #fdf2f8, #fce7f3, #fae8ff);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #d1478c, #c6428e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .issue-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        h3 {
+            color: var(--secondary-color);
+            margin: 25px 0 15px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        li:before {
+            content: "•";
+            color: var(--secondary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .code-block {
+            background: #f8f8f8;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        
+        .action-box {
+            background: #f0f8ff;
+            border-left: 4px solid #4a90e2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="app-container">
-    <header>
-      <h1>🎮 Game Hub</h1>
-      <div class="theme-toggle">
-        <button onclick="setTheme('dark')">🌙 Dark</button>
-        <button onclick="setTheme('romantic')">💖 Romantic</button>
-        <button onclick="setTheme('light')">☀️ Light</button>
-      </div>
-    </header>
-
-    <div class="game-menu">
-      <button onclick="loadGame('chess')">♟️ Chess</button>
-      <button onclick="loadGame('ludo')">🎲 Ludo</button>
-      <button onclick="loadGame('tash')">🃏 Tash</button>
-      <button onclick="loadGame('snake')">🐍 Snake</button>
-    </div>
-
-    <div id="game-container">
-      <p>Loading default game...</p>
-    </div>
-  </div>
-
-  <script>
-    let currentGame = null;
-    let currentTheme = localStorage.getItem("theme") || "dark";
-
-    function init() {
-      setTheme(currentTheme);
-
-      // Load default game if none selected
-      loadGame("snake");
-    }
-
-    function setTheme(theme) {
-      document.documentElement.setAttribute("data-theme", theme);
-      localStorage.setItem("theme", theme);
-      currentTheme = theme;
-      if (currentGame && currentGame.applyTheme) {
-        currentGame.applyTheme(theme);
-      }
-    }
-
-    function loadGame(gameType) {
-      const gameContainer = document.getElementById("game-container");
-      gameContainer.innerHTML = "";
-
-      switch (gameType) {
-        case "chess":
-          currentGame = new ChessGame(gameContainer);
-          break;
-        case "ludo":
-          currentGame = new LudoGame(gameContainer);
-          break;
-        case "tash":
-          currentGame = new TashGame(gameContainer);
-          break;
-        case "snake":
-        default:
-          currentGame = new SnakeGame(gameContainer);
-          break;
-      }
-    }
-<script>
-    // Global variables
-    let currentGame = null;
-    let currentTheme = localStorage.getItem("theme") || "dark";
-    
-    // Initialize the app
-    function init() {
-      setTheme(currentTheme);
-    }
-    
-    // Theme Switcher
-    function setTheme(theme) {
-      document.documentElement.setAttribute("data-theme", theme);
-      localStorage.setItem("theme", theme);
-      currentTheme = theme;
-      
-      // Update game if it supports themes
-      if (currentGame && currentGame.applyTheme) {
-        currentGame.applyTheme(theme);
-      }
-    }
-    
-    // Load Selected Game
-    function loadGame(gameType) {
-      const gameContainer = document.getElementById("game-container");
-      gameContainer.innerHTML = "";
-      
-      switch (gameType) {
-        case "chess":
-          currentGame = new ChessGame(gameContainer);
-          break;
-        case "ludo":
-          currentGame = new LudoGame(gameContainer);
-          break;
-        case "tash":
-          currentGame = new TashGame(gameContainer);
-          break;
-        case "snake":
-          currentGame = new SnakeGame(gameContainer);
-          break;
-      }
-    }
-    
-    // Chess Game Implementation
-    class ChessGame {
-      constructor(container) {
-        this.container = container;
-        this.board = this.createBoard();
-        this.currentPlayer = "white";
-        this.selectedPiece = null;
+    <div class="container">
+        <header>
+            <h1>AdSense Approval Guide</h1>
+            <p class="subtitle">Fixing common issues with your Love Compatibility Calculator site</p>
+        </header>
         
-        container.innerHTML = `
-          <div class="chess-board" id="chess-board"></div>
-          <div class="game-info">Current Player: ${this.currentPlayer}</div>
-          <div class="controls">
-            <button onclick="window.currentGame.reset()">Reset</button>
-          </div>
-        `;
-        
-        this.boardElement = document.getElementById("chess-board");
-        this.renderBoard();
-        this.applyTheme(currentTheme);
-      }
-      
-      createBoard() {
-        const board = [];
-        // Initialize pieces
-        const initialSetup = [
-          ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-          ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
-          ["", "", "", "", "", "", "", ""],
-          ["", "", "", "", "", "", "", ""],
-          ["", "", "", "", "", "", "", ""],
-          ["", "", "", "", "", "", "", ""],
-          ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-          ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"]
-        ];
-        
-        for (let row = 0; row < 8; row++) {
-          board[row] = [];
-          for (let col = 0; col < 8; col++) {
-            board[row][col] = {
-              piece: initialSetup[row][col],
-              row,
-              col
-            };
-          }
-        }
-        
-        return board;
-      }
-      
-      renderBoard() {
-        this.boardElement.innerHTML = "";
-        
-        for (let row = 0; row < 8; row++) {
-          for (let col = 0; col < 8; col++) {
-            const square = document.createElement("div");
-            square.className = "chess-square";
-            square.dataset.row = row;
-            square.dataset.col = col;
-            
-            if (this.board[row][col].piece) {
-              square.textContent = this.board[row][col].piece;
-            }
-            
-            square.addEventListener("click", () => this.handleSquareClick(row, col));
-            this.boardElement.appendChild(square);
-          }
-        }
-      }
-      
-      handleSquareClick(row, col) {
-        const square = this.board[row][col];
-        
-        if (this.selectedPiece) {
-          // Try to move
-          this.movePiece(this.selectedPiece.row, this.selectedPiece.col, row, col);
-          this.selectedPiece = null;
-          this.renderBoard();
-        } else if (square.piece) {
-          // Select piece
-          this.selectedPiece = square;
-          this.highlightMoves(row, col);
-        }
-      }
-      
-      highlightMoves(row, col) {
-        // Simple highlight - in a real game, this would calculate valid moves
-        this.renderBoard();
-        const squares = this.boardElement.querySelectorAll(".chess-square");
-        squares.forEach(sq => {
-          if (sq.dataset.row == row && sq.dataset.col == col) {
-            sq.style.boxShadow = "0 0 10px gold";
-          }
-        });
-      }
-      
-      movePiece(fromRow, fromCol, toRow, toCol) {
-        // Simple move logic - no validation
-        this.board[toRow][toCol].piece = this.board[fromRow][fromCol].piece;
-        this.board[fromRow][fromCol].piece = "";
-        this.currentPlayer = this.currentPlayer === "white" ? "black" : "white";
-        document.querySelector(".game-info").textContent = `Current Player: ${this.currentPlayer}`;
-      }
-      
-      reset() {
-        this.board = this.createBoard();
-        this.currentPlayer = "white";
-        this.selectedPiece = null;
-        document.querySelector(".game-info").textContent = `Current Player: ${this.currentPlayer}`;
-        this.renderBoard();
-      }
-      
-      applyTheme(theme) {
-        // Theme is applied via CSS
-      }
-    }
-    
-    // Ludo Game Implementation
-    class LudoGame {
-      constructor(container) {
-        this.container = container;
-        this.players = ["red", "blue", "green", "yellow"];
-        this.currentPlayer = 0;
-        this.pieces = this.createPieces();
-        
-        container.innerHTML = `
-          <div class="ludo-board" id="ludo-board"></div>
-          <div class="game-info">Current Player: ${this.players[this.currentPlayer]}</div>
-          <div class="controls">
-            <button onclick="window.currentGame.rollDice()">Roll Dice</button>
-            <button onclick="window.currentGame.reset()">Reset</button>
-          </div>
-        `;
-        
-        this.boardElement = document.getElementById("ludo-board");
-        this.renderPieces();
-        this.applyTheme(currentTheme);
-      }
-      
-      createPieces() {
-        const pieces = [];
-        const startPositions = {
-          red: { x: 5, y: 5 },
-          blue: { x: 85, y: 5 },
-          green: { x: 85, y: 85 },
-          yellow: { x: 5, y: 85 }
-        };
-        
-        this.players.forEach(color => {
-          for (let i = 0; i < 4; i++) {
-            pieces.push({
-              id: `${color}-${i}`,
-              color,
-              x: startPositions[color].x,
-              y: startPositions[color].y,
-              position: "home"
-            });
-          }
-        });
-        
-        return pieces;
-      }
-      
-      renderPieces() {
-        this.boardElement.innerHTML = "";
-        
-        this.pieces.forEach(piece => {
-          const pieceElement = document.createElement("div");
-          pieceElement.className = "ludo-piece";
-          pieceElement.id = piece.id;
-          pieceElement.style.backgroundColor = piece.color;
-          pieceElement.style.left = `calc(${piece.x}% - 10px)`;
-          pieceElement.style.top = `calc(${piece.y}% - 10px)`;
-          pieceElement.addEventListener("click", () => this.movePiece(piece.id));
-          this.boardElement.appendChild(pieceElement);
-        });
-      }
-      
-      rollDice() {
-        const diceValue = Math.floor(Math.random() * 6) + 1;
-        alert(`You rolled a ${diceValue}!`);
-        
-        // Simple move logic - just for demonstration
-        const movablePieces = this.pieces.filter(p => p.color === this.players[this.currentPlayer]]);
-        if (movablePieces.length > 0) {
-          const randomPiece = movablePieces[Math.floor(Math.random() * movablePieces.length)];
-          randomPiece.x += 5;
-          randomPiece.y += 5;
-          this.renderPieces();
-        }
-        
-        this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
-        document.querySelector(".game-info").textContent = `Current Player: ${this.players[this.currentPlayer]}`;
-      }
-      
-      movePiece(pieceId) {
-        // In a real game, this would handle piece movement
-        console.log(`Moving piece ${pieceId}`);
-      }
-      
-      reset() {
-        this.pieces = this.createPieces();
-        this.currentPlayer = 0;
-        document.querySelector(".game-info").textContent = `Current Player: ${this.players[this.currentPlayer]}`;
-        this.renderPieces();
-      }
-      
-      applyTheme(theme) {
-        // Theme is applied via CSS
-      }
-    }
-    
-    // Tash Game Implementation
-    class TashGame {
-      constructor(container) {
-        this.container = container;
-        this.cards = this.createDeck();
-        this.shuffleDeck();
-        this.selectedCards = [];
-        
-        container.innerHTML = `
-          <div class="tash-game">
-            <div class="tash-cards" id="tash-cards"></div>
-            <div class="game-info">Select matching cards</div>
-            <div class="controls">
-              <button onclick="window.currentGame.reset()">New Game</button>
+        <div class="content">
+            <div class="issue-section">
+                <h2>AdSense Approval Issues</h2>
+                <p>Your AdSense application was not approved due to policy violations. Based on your Love Compatibility Calculator website, here are the most likely issues and how to fix them:</p>
+                
+                <h3>1. Insufficient Original Content</h3>
+                <p>Your site appears to have limited original content beyond the calculator functionality. AdSense requires substantial, original content that provides value to users.</p>
+                
+                <div class="action-box">
+                    <h4>Action Plan:</h4>
+                    <ul>
+                        <li>Add a blog section with relationship advice articles</li>
+                        <li>Create detailed explanations of how your calculator works</li>
+                        <li>Add personality type descriptions and compatibility explanations</li>
+                        <li>Include relationship tips and advice content</li>
+                    </ul>
+                    <a href="#" class="btn">View Content Guidelines</a>
+                </div>
+                
+                <h3>2. Thin Privacy Policy Page</h3>
+                <p>Your Privacy Policy needs to be comprehensive and specifically mention how you handle user data, cookies, and third-party advertising.</p>
+                
+                <div class="code-block">
+                    // Your Privacy Policy should include:<br>
+                    - Data collection methods (forms, analytics, ads)<br>
+                    - Use of cookies and similar technologies<br>
+                    - Third-party disclosure (including AdSense)<br>
+                    - Data protection measures<br>
+                    - User rights and choices<br>
+                    - Contact information for privacy concerns
+                </div>
+                
+                <h3>3. Navigation and User Experience</h3>
+                <p>Your site should have clear navigation and provide a good user experience across all devices.</p>
+                
+                <div class="action-box">
+                    <h4>Improvement Tips:</h4>
+                    <ul>
+                        <li>Ensure mobile responsiveness works perfectly</li>
+                        <li>Add a clear menu structure with important pages</li>
+                        <li>Improve page loading speed</li>
+                        <li>Fix any broken links or errors</li>
+                    </ul>
+                </div>
+                
+                <h3>4. Contact Information</h3>
+                <p>You need a properly accessible Contact page with legitimate contact information.</p>
+                
+                <div class="code-block">
+                    // Your Contact page should include:<br>
+                    - A working contact form<br>
+                    - Email address<br>
+                    - Physical business address (if applicable)<br>
+                    - Social media links (if available)
+                </div>
+                
+                <h3>5. About Page Quality</h3>
+                <p>Your About page should clearly explain who you are, your expertise, and the purpose of your website.</p>
+                
+                <div class="action-box">
+                    <h4>Enhance Your About Page:</h4>
+                    <ul>
+                        <li>Add information about your team or company</li>
+                        <li>Explain your mission and values</li>
+                        <li>Include author bios with credentials</li>
+                        <li>Add professional photos</li>
+                    </ul>
+                </div>
             </div>
-          </div>
-        `;
+            
+            <div class="issue-section">
+                <h2>Implementation Guide</h2>
+                
+                <h3>Step 1: Expand Your Content</h3>
+                <p>Add these pages to your site with high-quality, original content:</p>
+                <ul>
+                    <li><strong>Blog</strong> - Regular articles about relationships, love tips, compatibility advice</li>
+                    <li><strong>How It Works</strong> - Detailed explanation of your compatibility algorithms</li>
+                    <li><strong>Relationship Guides</strong> - Comprehensive guides on different relationship aspects</li>
+                    <li><strong>Testimonials</strong> - User experiences with your calculator</li>
+                </ul>
+                
+                <h3>Step 2: Enhance Policy Pages</h3>
+                <p>Improve your policy pages to be more comprehensive:</p>
+                
+                <div class="code-block">
+                    // Privacy Policy should specifically mention:<br>
+                    - Google AdSense and their use of cookies<br>
+                    - How you collect and use data from the calculator<br>
+                    - User consent mechanisms<br>
+                    - Data retention policies<br>
+                    - How users can request data deletion
+                </div>
+                
+                <h3>Step 3: Improve Site Structure</h3>
+                <p>Optimize your website structure for both users and AdSense:</p>
+                <ul>
+                    <li>Ensure fast loading times (optimize images, minimize code)</li>
+                    <li>Implement proper heading structure (H1, H2, H3 tags)</li>
+                    <li>Add meta descriptions to all pages</li>
+                    <li>Create an XML sitemap and submit to Google Search Console</li>
+                </ul>
+                
+                <h3>Step 4: Add More Interactive Elements</h3>
+                <p>Enhance user engagement with additional features:</p>
+                <ul>
+                    <li>Relationship quiz pages</li>
+                    <li>Compatibility comparison tools</li>
+                    <li>User account features to save results</li>
+                    <li>Social sharing capabilities</li>
+                </ul>
+            </div>
+            
+            <div class="issue-section">
+                <h2>Checklist for Resubmission</h2>
+                <p>Before resubmitting your site to AdSense, ensure you've addressed these points:</p>
+                
+                <ul>
+                    <li>✅ At least 15-20 pages of original, high-quality content</li>
+                    <li>✅ Comprehensive Privacy Policy with AdSense mentions</li>
+                    <li>✅ Detailed Terms of Service page</li>
+                    <li>✅ Clear Contact information</li>
+                    <li>✅ Professional About Us page</li>
+                    <li>✅ Mobile-responsive design</li>
+                    <li>✅ Fast loading times</li>
+                    <li>✅ No broken links or errors</li>
+                    <li>✅ Clear navigation structure</li>
+                    <li>✅ No placeholder or "under construction" pages</li>
+                    <li>✅ Original content (not copied from other sites)</li>
+                    <li>✅ No prohibited content (ensure compliance with AdSense policies)</li>
+                </ul>
+                
+                <div class="action-box">
+                    <h4>Ready to resubmit?</h4>
+                    <p>Once you've made these changes, wait 1-2 weeks for Google to recrawl your site, then resubmit your application.</p>
+                    <a href="https://www.google.com/adsense" class="btn" target="_blank">Resubmit to AdSense</a>
+                </div>
+            </div>
+        </div>
         
-        this.cardsElement = document.getElementById("tash-cards");
-        this.renderCards();
-        this.applyTheme(currentTheme);
-      }
-      
-      createDeck() {
-        const suits = ["♥", "♦", "♣", "♠"];
-        const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-        const deck = [];
-        
-        suits.forEach(suit => {
-          values.forEach(value => {
-            deck.push({
-              suit,
-              value,
-              id: `${suit}-${value}`,
-              revealed: false
+        <footer>
+            <p>This guide is provided for informational purposes only. For official AdSense policies, please refer to <a href="https://support.google.com/adsense/answer/48182">Google's AdSense Program Policies</a>.</p>
+            <p>© 2023 Love Compatibility Calculator. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple JavaScript for interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
             });
-          });
         });
-        
-        return deck;
-      }
-      
-      shuffleDeck() {
-        // Take 12 random cards for the game
-        const shuffled = [...this.cards].sort(() => Math.random() - 0.5).slice(0, 12);
-        // Create pairs
-        this.gameCards = [...shuffled, ...shuffled].map((card, index) => ({
-          ...card,
-          id: `${card.id}-${index}`,
-          revealed: false,
-          matched: false
-        }));
-        
-        // Shuffle again
-        this.gameCards.sort(() => Math.random() - 0.5);
-      }
-      
-      renderCards() {
-        this.cardsElement.innerHTML = "";
-        
-        this.gameCards.forEach(card => {
-          const cardElement = document.createElement("div");
-          cardElement.className = "tash-card";
-          cardElement.id = card.id;
-          
-          if (card.revealed || card.matched) {
-            cardElement.textContent = `${card.value}${card.suit}`;
-            if (card.suit === "♥" || card.suit === "♦") {
-              cardElement.style.color = "red";
-            } else {
-              cardElement.style.color = "black";
-            }
-          } else {
-            cardElement.textContent = "🂠";
-          }
-          
-          if (card.matched) {
-            cardElement.style.opacity = "0.5";
-          }
-          
-          cardElement.addEventListener("click", () => this.revealCard(card.id));
-          this.cardsElement.appendChild(cardElement);
-        });
-      }
-      
-      revealCard(cardId) {
-        const card = this.gameCards.find(c => c.id === cardId);
-        
-        if (!card || card.revealed || card.matched || this.selectedCards.length >= 2) {
-          return;
-        }
-        
-        card.revealed = true;
-        this.selectedCards.push(card);
-        this.renderCards();
-        
-        if (this.selectedCards.length === 2) {
-          this.checkMatch();
-        }
-      }
-      
-      checkMatch() {
-        const [card1, card2] = this.selectedCards;
-        
-        if (card1.value === card2.value && card1.suit === card2.suit && card1.id !== card2.id) {
-          // Match found
-          card1.matched = true;
-          card2.matched = true;
-          this.selectedCards = [];
-          this.renderCards();
-          
-          // Check if game is over
-          if (this.gameCards.every(card => card.matched)) {
-            document.querySelector(".game-info").textContent = "Congratulations! You won!";
-          }
-        } else {
-          // No match
-          setTimeout(() => {
-            card1.revealed = false;
-            card2.revealed = false;
-            this.selectedCards = [];
-            this.renderCards();
-          }, 1000);
-        }
-      }
-      
-      reset() {
-        this.shuffleDeck();
-        this.selectedCards = [];
-        document.querySelector(".game-info").textContent = "Select matching cards";
-        this.renderCards();
-      }
-      
-      applyTheme(theme) {
-        // Theme is applied via CSS
-      }
-    }
-    
-    // Snake Game Implementation
-    class SnakeGame {
-      constructor(container) {
-        this.container = container;
-        this.snake = [{x: 10, y: 10}];
-        this.food = this.generateFood();
-        this.direction = "right";
-        this.gameOver = false;
-        this.score = 0;
-        
-        container.innerHTML = `
-          <div class="snake-game" id="snake-game" tabindex="0"></div>
-          <div class="game-info">Score: ${this.score}</div>
-          <div class="controls">
-            <button onclick="window.currentGame.reset()">Reset</button>
-          </div>
-        `;
-        
-        this.gameElement = document.getElementById("snake-game");
-        this.gameElement.focus();
-        this.renderGame();
-        this.applyTheme(currentTheme);
-        
-        // Start game loop
-        this.gameLoop = setInterval(() => this.update(), 200);
-        
-        // Keyboard controls
-        this.gameElement.addEventListener("keydown", (e) => {
-          switch(e.key) {
-            case "ArrowUp":
-              if (this.direction !== "down") this.direction = "up";
-              break;
-            case "ArrowDown":
-              if (this.direction !== "up") this.direction = "down";
-              break;
-            case "ArrowLeft":
-              if (this.direction !== "right") this.direction = "left";
-              break;
-            case "ArrowRight":
-              if (this.direction !== "left") this.direction = "right";
-              break;
-          }
-        });
-      }
-      
-      renderGame() {
-        this.gameElement.innerHTML = "";
-        
-        // Render snake
-        this.snake.forEach((segment, index) => {
-          const segmentElement = document.createElement("div");
-          segmentElement.className = "snake-segment";
-          segmentElement.style.left = `${segment.x * 20}px`;
-          segmentElement.style.top = `${segment.y * 20}px`;
-          
-          if (index === 0) {
-            segmentElement.style.backgroundColor = "darkgreen"; // Head color
-          }
-          
-          this.gameElement.appendChild(segmentElement);
-        });
-        
-        // Render food
-        const foodElement = document.createElement("div");
-        foodElement.className = "snake-food";
-        foodElement.style.left = `${this.food.x * 20}px`;
-        foodElement.style.top = `${this.food.y * 20}px`;
-        this.gameElement.appendChild(foodElement);
-      }
-      
-      update() {
-        if (this.gameOver) return;
-        
-        const head = {...this.snake[0]};
-        
-        // Move head
-        switch(this.direction) {
-          case "up":
-            head.y -= 1;
-            break;
-          case "down":
-            head.y += 1;
-            break;
-          case "left":
-            head.x -= 1;
-            break;
-          case "right":
-            head.x += 1;
-            break;
-        }
-        
-        // Check collisions
-        if (
-          head.x < 0 || head.x >= 20 ||
-          head.y < 0 || head.y >= 20 ||
-          this.snake.some(segment => segment.x === head.x && segment.y === head.y)
-        ) {
-          this.gameOver = true;
-          document.querySelector(".game-info").textContent = `Game Over! Score: ${this.score}`;
-          clearInterval(this.gameLoop);
-          return;
-        }
-        
-        // Add new head
-        this.snake.unshift(head);
-        
-        // Check food collision
-        if (head.x === this.food.x && head.y === this.food.y) {
-          this.score += 10;
-          document.querySelector(".game-info").textContent = `Score: ${this.score}`;
-          this.food = this.generateFood();
-        } else {
-          // Remove tail if no food eaten
-          this.snake.pop();
-        }
-        
-        this.renderGame();
-      }
-      
-      generateFood() {
-        let food;
-        do {
-          food = {
-            x: Math.floor(Math.random() * 20),
-            y: Math.floor(Math.random() * 20)
-          };
-        } while (this.snake.some(segment => segment.x === food.x && segment.y === food.y));
-        
-        return food;
-      }
-      
-      reset() {
-        clearInterval(this.gameLoop);
-        this.snake = [{x: 10, y: 10}];
-        this.food = this.generateFood();
-        this.direction = "right";
-        this.gameOver = false;
-        this.score = 0;
-        document.querySelector(".game-info").textContent = `Score: ${this.score}`;
-        this.renderGame();
-        this.gameLoop = setInterval(() => this.update(), 200);
-        this.gameElement.focus();
-      }
-      
-      applyTheme(theme) {
-        // Theme is applied via CSS
-      }
-    }
-    
-    // Initialize the app
-    window.onload = init;
-  </script>
+    </script>
 </body>
 </html>
