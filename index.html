@@ -1332,7 +1332,50 @@
         </div>
     </div>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+            
+                const savedJapName = localStorage.getItem('japName');
+                if (savedJapName) {
+                                        return;
+                }
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = historyHtml;
+                const items = tempDiv.querySelectorAll('.history-item');
+
+                let tableRows = '';
+                items.forEach(item => {
+                    const spans = item.querySelectorAll('span');
+                    const dateInfo = spans[0] ? spans[0].textContent : '';
+                    const countInfo = spans[1] ? spans[1].textContent : '';
+                    tableRows += `<tr><td style="padding: 8px; border: 1px solid #ddd;">${dateInfo}</td><td style="padding: 8px; border: 1px solid #ddd;">${countInfo}</td></tr>`;
+                });
+
+                const contentForPdf = `
+                    <div style="font-family: 'Hind Siliguri', sans-serif; padding: 30px; color: #333;">
+                        <h1 style="color: #5a2f2f; border-bottom: 2px solid #e6b85c; padding-bottom: 10px;">राधा नाम जप - इतिहास</h1>
+                        <p style="font-size: 1.2em;"><strong>जप नाम:</strong> ${japName}</p>
+                        <br>
+                        <h2 style="color: #5a2f2f;">कुल योग</h2>
+                        <p><strong>कुल जप:</strong> ${totalsData.totalCount}</p>
+                        <p><strong>कुल माला:</strong> ${totalsData.totalMalaCount}</p>
+                        <br>
+                        <h2 style="color: #5a2f2f;">सत्र इतिहास</h2>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                            <thead style="background-color: #f2f2f2;">
+                                <tr>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">दिनांक और समय</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">विवरण</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tableRows || '<tr><td colspan="2" style="padding: 8px; border: 1px solid #ddd; text-align: center;">कोई सत्र नहीं मिला।</td></tr>'}
+                            </tbody>
+                        </table>
+                        <br><br>
+                        <p style="text-align: center; color: #888; font-size: 0.9em;">© ${new Date().getFullYear()} राधा नाम जप | भक्ति और प्रेम के साथ डिजाइन किया गया</p>
+                    </div>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1363,7 +1406,7 @@
             const historyFullscreenList = document.getElementById('historyFullscreenList');
             const closeFullscreenHistoryBtn = document.getElementById('closeFullscreenHistoryBtn');
 
-            // *** NEW: History Control Elements ***
+            // History Control Elements
             const clearHistoryBtn = document.getElementById('clearHistoryBtn');
             const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 
@@ -1634,28 +1677,22 @@
                 }
             });
 
-            // *** NEW: Clear History Functionality ***
+            // Clear History Functionality
             clearHistoryBtn.addEventListener('click', function() {
                 if (confirm('क्या आप वाकई अपना सारा जप इतिहास और कुल योग साफ़ करना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')) {
-                    // Clear local storage
                     localStorage.removeItem('radhaNaamJapHistory');
                     localStorage.removeItem('radhaNaamJapTotals');
-                    
-                    // Reset variables
                     totalCount = 0;
                     totalMalaCount = 0;
-                    
-                    // Update UI
                     historyContainer.innerHTML = '';
-                    historyFullscreenList.innerHTML = ''; // Also clear the modal view
+                    historyFullscreenList.innerHTML = '';
                     totalCountDisplay.textContent = '0';
                     totalMalaDisplay.textContent = '0';
-                    
                     alert('इतिहास सफलतापूर्वक साफ़ कर दिया गया है।');
                 }
             });
 
-            // *** NEW: Download PDF Functionality ***
+            // --- START: PDF Generation Fix ---
             downloadPdfBtn.addEventListener('click', function() {
                 const historyHtml = localStorage.getItem('radhaNaamJapHistory') || '';
                 const totalsData = JSON.parse(localStorage.getItem('radhaNaamJapTotals')) || { totalCount: 0, totalMalaCount: 0 };
@@ -1677,7 +1714,8 @@
                     const countInfo = spans[1] ? spans[1].textContent : '';
                     tableRows += `<tr><td style="padding: 8px; border: 1px solid #ddd;">${dateInfo}</td><td style="padding: 8px; border: 1px solid #ddd;">${countInfo}</td></tr>`;
                 });
-
+                
+                // The HTML content for the PDF
                 const contentForPdf = `
                     <div style="font-family: 'Hind Siliguri', sans-serif; padding: 30px; color: #333;">
                         <h1 style="color: #5a2f2f; border-bottom: 2px solid #e6b85c; padding-bottom: 10px;">राधा नाम जप - इतिहास</h1>
@@ -1704,6 +1742,14 @@
                     </div>
                 `;
                 
+                // Create a hidden element to render for the PDF
+                const pdfContentEl = document.createElement('div');
+                pdfContentEl.style.position = 'absolute';
+                pdfContentEl.style.left = '-9999px'; // Move it off-screen
+                pdfContentEl.style.width = '210mm'; // A4 width helps with layout
+                pdfContentEl.innerHTML = contentForPdf;
+                document.body.appendChild(pdfContentEl);
+                
                 const options = {
                     margin: 0.5,
                     filename: 'Radha_Jap_History.pdf',
@@ -1712,8 +1758,12 @@
                     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
                 };
 
-                html2pdf().from(contentForPdf).set(options).save();
+                // Generate PDF from the hidden element, then remove the element
+                html2pdf().from(pdfContentEl).set(options).save().then(() => {
+                    document.body.removeChild(pdfContentEl);
+                });
             });
+            // --- END: PDF Generation Fix ---
 
 
             // Premanand Maharaj Ji Section Logic
@@ -1763,5 +1813,3 @@
             }
         });
     </script>
-</body>
-</html>
